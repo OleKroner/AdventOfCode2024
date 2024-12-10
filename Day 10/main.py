@@ -23,9 +23,17 @@ class Tile:
     def __str__(self):
         return f"{self.pos} - {[x.pos for x in self.paths]}"
     
-    def get_hiketrail_count(self) -> int:      
+    def build_trails(self):
+        self.paths = [Tile(pos) for pos in get_surrounding_tiles(self.pos)]
+
+        for child_tile in self.paths:
+            child_tile.build_trails()
+        
+        return self.paths
+    
+    def get_hiketrail_count(self):      
         if map[self.pos[0]][self.pos[1]] == 9:
-            return 1
+            return int(1)
         
         trail_count = 0
         for path in self.paths:
@@ -57,16 +65,9 @@ def get_trailhead_score(trailhead: tuple[int, int]):
     
     return len([height for height, position in tiles_on_trails if height == 9])
 
-def build_trail(tile: Tile):
-    tile.paths = [Tile(pos) for pos in get_surrounding_tiles(tile.pos)]
-    for child_tile in tile.paths:
-        child_tile.paths = build_trail(child_tile)
-    
-    return tile.paths
-
 def get_trailhead_rating(trailhead: tuple[int, int]):
     start = Tile(trailhead)
-    start.paths = build_trail(start)
+    start.build_trails()
 
     return start.get_hiketrail_count()
 
