@@ -13,7 +13,7 @@ def display_progress(current, total, prefix="Progress", length=50):
     if current == total:
         sys.stdout.write("\n")
 
-with open("./test_input.txt") as file:
+with open("./input.txt") as file:
     for id, size in enumerate(file.read()):
         if id % 2 == 0:
             for i in range(int(size)):
